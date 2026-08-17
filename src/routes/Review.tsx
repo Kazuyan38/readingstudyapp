@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AnimatePresence, motion } from 'motion/react'
 import { GlassCard } from '../components/ui/GlassCard'
 import { GlassButton } from '../components/ui/GlassButton'
 import { listDueCards, getSettings, updateCard, appendReviewLog, getBook } from '../lib/db/repository'
@@ -135,18 +136,36 @@ export function Review() {
         {index + 1} / {queue.length} ・ {bookTitle}
       </p>
 
-      <GlassCard
-        padding="lg"
-        className="min-h-[220px] w-full cursor-pointer"
-        onClick={() => !revealed && setRevealed(true)}
-      >
-        <p className="text-center text-lg font-medium">{current.front}</p>
-        {revealed && (
-          <div className="mt-6 border-t border-(--glass-stroke) pt-6 text-center transition-opacity duration-300">
-            <p className="whitespace-pre-wrap text-(--text-primary)">{current.back}</p>
-          </div>
-        )}
-      </GlassCard>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={current.id}
+          className="w-full"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -8 }}
+          transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <GlassCard
+            padding="lg"
+            className="min-h-[220px] w-full cursor-pointer"
+            onClick={() => !revealed && setRevealed(true)}
+          >
+            <p className="text-center text-lg font-medium">{current.front}</p>
+            <AnimatePresence>
+              {revealed && (
+                <motion.div
+                  initial={{ opacity: 0, filter: 'blur(12px)' }}
+                  animate={{ opacity: 1, filter: 'blur(0px)' }}
+                  transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+                  className="mt-6 border-t border-(--glass-stroke) pt-6 text-center"
+                >
+                  <p className="whitespace-pre-wrap text-(--text-primary)">{current.back}</p>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </GlassCard>
+        </motion.div>
+      </AnimatePresence>
 
       {!revealed ? (
         <GlassButton onClick={() => setRevealed(true)}>思い出す（スペース）</GlassButton>

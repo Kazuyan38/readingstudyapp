@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { GlassCard } from '../components/ui/GlassCard'
 import { ForecastBars } from '../components/viz/ForecastBars'
 import { RetentionOrb } from '../components/viz/RetentionOrb'
+import { Heatmap } from '../components/viz/Heatmap'
 import { db } from '../lib/db/schema'
 import { estimateRetention } from '../lib/srs/retention'
 import type { InsightCard } from '../lib/db/schema'
@@ -10,11 +11,13 @@ const DAY_MS = 24 * 60 * 60 * 1000
 
 export function Stats() {
   const [cards, setCards] = useState<InsightCard[]>([])
+  const [reviewedAtList, setReviewedAtList] = useState<number[]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    db.cards.toArray().then((rows) => {
-      setCards(rows.filter((c) => !c.deletedAt))
+    Promise.all([db.cards.toArray(), db.reviewLogs.toArray()]).then(([cardRows, logRows]) => {
+      setCards(cardRows.filter((c) => !c.deletedAt))
+      setReviewedAtList(logRows.map((l) => l.reviewedAt))
       setLoading(false)
     })
   }, [])
@@ -35,6 +38,11 @@ export function Stats() {
 
   return (
     <div className="flex flex-col gap-6">
+      <GlassCard padding="lg">
+        <h2 className="mb-4 text-lg">復習の記録（直近18週間）</h2>
+        <Heatmap reviewedAtList={reviewedAtList} />
+      </GlassCard>
+
       <GlassCard padding="lg">
         <h2 className="mb-4 text-lg">今後 30 日の復習予定</h2>
         <ForecastBars counts={forecast} />

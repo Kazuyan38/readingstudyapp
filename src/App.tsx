@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, NavLink, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion, MotionConfig } from 'motion/react'
 import { Dashboard } from './routes/Dashboard'
 import { Library } from './routes/Library'
 import { BookDetail } from './routes/BookDetail'
@@ -41,13 +42,19 @@ function NavBar() {
   )
 }
 
-export default function App() {
+// ページ遷移はクロスフェードのみ（docs/DESIGN.md §8.5）。スライドさせない。
+function AnimatedRoutes() {
+  const location = useLocation()
   return (
-    <BrowserRouter basename={import.meta.env.BASE_URL}>
-      <div className="bg-mesh" />
-      <NavBar />
-      <main className="mx-auto max-w-6xl px-4 pb-16 sm:px-8">
-        <Routes>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={location.pathname}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <Routes location={location}>
           <Route path="/" element={<Dashboard />} />
           <Route path="/library" element={<Library />} />
           <Route path="/books/:id" element={<BookDetail />} />
@@ -59,7 +66,22 @@ export default function App() {
           <Route path="/settings" element={<SettingsHome />} />
           <Route path="/settings/sync" element={<SettingsSync />} />
         </Routes>
-      </main>
-    </BrowserRouter>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
+
+export default function App() {
+  return (
+    // prefers-reduced-motion: reduce の場合、Motion のアニメーションを全て即時化する
+    <MotionConfig reducedMotion="user">
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
+        <div className="bg-mesh" />
+        <NavBar />
+        <main className="mx-auto max-w-6xl px-4 pb-16 sm:px-8">
+          <AnimatedRoutes />
+        </main>
+      </BrowserRouter>
+    </MotionConfig>
   )
 }
