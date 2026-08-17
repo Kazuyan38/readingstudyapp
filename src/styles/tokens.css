@@ -1,0 +1,100 @@
+/* デザイントークン — docs/DESIGN.md §8 参照 */
+
+:root {
+  /* Light — 霧氷 */
+  --bg-base: #f4f6fb;
+  --bg-mesh-a: #dbe4ff;
+  --bg-mesh-b: #e7dcf5;
+  --bg-mesh-c: #d6efee;
+  --glass-fill: rgb(255 255 255 / 0.55);
+  --glass-stroke: rgb(255 255 255 / 0.75);
+  --glass-shadow: rgb(20 25 43 / 0.12);
+  --text-primary: #14192b;
+  --text-muted: #5b6480;
+  --accent: #4f6bff;
+  --accent-warm: #c9a227;
+  --danger: #c14f4f;
+
+  --font-serif: 'Shippori Mincho', 'EB Garamond', serif;
+  --font-sans: 'Noto Sans JP', 'Inter', sans-serif;
+  --font-mono-num: 'Inter', sans-serif;
+
+  --ease-glass: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius-card: 20px;
+}
+
+:root:not([data-theme='light']) {
+  /* Dark — 深海（既定） */
+  --bg-base: #070b16;
+  --bg-mesh-a: #17225c;
+  --bg-mesh-b: #3a1d5e;
+  --bg-mesh-c: #0d3f4a;
+  --glass-fill: rgb(255 255 255 / 0.06);
+  --glass-stroke: rgb(255 255 255 / 0.14);
+  --glass-shadow: rgb(0 0 0 / 0.35);
+  --text-primary: #eef1f8;
+  --text-muted: #98a2bd;
+  --accent: #7e9bff;
+  --accent-warm: #e8c66a;
+  --danger: #e08080;
+}
+
+:root[data-theme='dark'] {
+  --bg-base: #070b16;
+  --bg-mesh-a: #17225c;
+  --bg-mesh-b: #3a1d5e;
+  --bg-mesh-c: #0d3f4a;
+  --glass-fill: rgb(255 255 255 / 0.06);
+  --glass-stroke: rgb(255 255 255 / 0.14);
+  --glass-shadow: rgb(0 0 0 / 0.35);
+  --text-primary: #eef1f8;
+  --text-muted: #98a2bd;
+  --accent: #7e9bff;
+  --accent-warm: #e8c66a;
+  --danger: #e08080;
+}
+
+.glass {
+  background: var(--glass-fill);
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  border: 1px solid var(--glass-stroke);
+  border-radius: var(--radius-card);
+  box-shadow:
+    0 8px 32px var(--glass-shadow),
+    inset 0 1px 0 rgb(255 255 255 / 0.2);
+}
+
+.bg-mesh {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(ellipse 60% 50% at 15% 20%, var(--bg-mesh-a), transparent 60%),
+    radial-gradient(ellipse 55% 45% at 85% 15%, var(--bg-mesh-b), transparent 60%),
+    radial-gradient(ellipse 65% 55% at 50% 90%, var(--bg-mesh-c), transparent 60%),
+    var(--bg-base);
+  background-color: var(--bg-base);
+  animation: mesh-drift 60s ease-in-out infinite alternate;
+}
+
+@keyframes mesh-drift {
+  from {
+    background-position:
+      0% 0%,
+      0% 0%,
+      0% 0%;
+  }
+  to {
+    background-position:
+      6% 4%,
+      -5% 6%,
+      3% -5%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-mesh {
+    animation: none;
+  }
+}

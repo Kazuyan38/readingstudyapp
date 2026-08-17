@@ -1,0 +1,20 @@
+name = "readingstudyapp-sync"
+main = "src/index.ts"
+compatibility_date = "2026-08-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "readingstudyapp-sync"
+database_id = "REPLACE_WITH_YOUR_D1_DATABASE_ID"
+
+[[ratelimits]]
+name = "SYNC_LIMITER"
+namespace_id = "1001"
+
+[ratelimits.simple]
+limit = 60
+period = 60
+
+# 許可オリジンと spaceId 許可リストはシークレットとして設定する:
+#   wrangler secret put ALLOWED_ORIGIN
+#   wrangler secret put ALLOWED_SPACE_HASH

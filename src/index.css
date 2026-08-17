@@ -1,0 +1,57 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+
+/* 日本語 + ラテン文字のサブセットのみを読み込む（全 unicode-range を読むと
+   Service Worker のプリキャッシュ対象が数百ファイルに膨れ上がるため）。 */
+@import '@fontsource/shippori-mincho/japanese-400.css';
+@import '@fontsource/shippori-mincho/japanese-600.css';
+@import '@fontsource/noto-sans-jp/japanese-400.css';
+@import '@fontsource/noto-sans-jp/japanese-500.css';
+@import '@fontsource/inter/latin-400.css';
+@import '@fontsource/inter/latin-600.css';
+@import '@fontsource/eb-garamond/latin-400.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.9;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+blockquote {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.tabular {
+  font-family: var(--font-mono-num);
+  font-variant-numeric: tabular-nums;
+}
+
+.prose-measure {
+  max-width: 68ch;
+}
+
+a {
+  color: inherit;
+}
+
+button {
+  font-family: inherit;
+}
